@@ -1,0 +1,94 @@
+: cascade "include/layout.tx"
+
+: override content -> {
+
+<style>
+    tbody tr.clickable:hover td {
+      background: #ecf2fa;
+      cursor: pointer;
+    }
+    .marketing .row {
+        margin-top: 20px;
+    }
+    .bs-example {
+    margin-left: 0;
+    margin-right: 0;
+    background-color: #fff;
+    border-width: 1px;
+    border-color: #ddd;
+    border-radius: 4px 4px 0 0;
+    box-shadow: none;
+    tbody tr.even td {
+      background: #fbfbfb;
+    }
+}
+</style>
+<script type="text/javascript">
+   jQuery( function($) {
+      $('tbody tr[data-href]').addClass('clickable')
+      .click( function() {
+        if ( $(this).attr('data-href') != '' ) {
+          window.open($(this).attr('data-href'), '_blank');
+        }
+      }).find('a').hover( function() {
+        $(this).parents('tr').unbind('click');
+      }, function() {
+        $(this).parents('tr').click( function() {
+          if ( $(this).attr('data-href') != '' ) {
+            window.open($(this).attr('data-href'), '_blank');
+          }
+        });
+      });
+    });
+</script>
+<div class="container">
+  <div class="marketing">
+    <h2 style="text-align: center; font-size: 220%;"><i class="glyphicon glyphicon-folder-open"></i>　これまでのトーク</h2>
+    <br>
+    : for $prgrms_pst -> $prgrm {
+    <h3><:= $prgrm[0]['date'] :> ( Vol.<:= $prgrm[0]['vol'] :> )</h3>
+    <div class="row">
+      <table class="table table-striped">
+        <thead>
+          <tr>  
+            <th>#</th>
+            <th>発表者</th>
+            <th>ボリューム</th>
+            <th>ジャンル</th>
+            <th>タイトル</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        : for $prgrm -> $talk {
+          :   if $talk['row']['content']['スライド'] != '' {
+            <tr data-href="<:= $talk['row']['content']['スライド'] :>">
+          :   } else {
+            <tr>
+          :   }
+              <td><:= $~talk.count :></td>
+              <td><:= $talk['row']['content']['発表者'] :></td>
+              <td><:= $talk['row']['content']['ボリューム'] :></td>
+              <td><:= $talk['row']['content']['ジャンル'] :></td>
+              <td><:= $talk['row']['content']['タイトル'] :></td>
+              <td style='text-align: center; width: 20%;'>
+              :   if $talk['row']['content']['映像非公開'] != '' {
+                <button type="button" class="btn btn-danger btn-xs">映像非公開</button>
+              :   }
+              :   if $talk['row']['content']['スライド'] != '' {
+                <button type="button" class="btn btn-primary btn-xs">スライドあり</button>
+              :   }
+              </td>
+            </tr>
+          : }
+        </tbody>
+      </table>
+    </div>
+    : }
+  </div>
+
+  <hr />
+
+</div>
+
+: }
